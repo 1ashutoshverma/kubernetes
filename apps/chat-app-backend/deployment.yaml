@@ -32,11 +32,11 @@ spec:
               memory: 128Mi
           livenessProbe:
             httpGet:
-              path: /
+              path: /api
               port: 8080
             initialDelaySeconds: 30
           readinessProbe:
             httpGet:
-              path: /
+              path: /api
               port: 8080
             initialDelaySeconds: 5
