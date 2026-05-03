@@ -1,22 +1,12 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: personal-apps-ingress
+  name: main-ingress
   namespace: personal-apps
   labels:
     app.kubernetes.io/managed-by: argocd
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "50m"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
-    nginx.ingress.kubernetes.io/use-regex: "true"
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
-
-    # WebSocket support (required for Socket.IO on chat-backend)
-    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header Connection "upgrade";
 spec:
   ingressClassName: nginx
   rules:
@@ -32,7 +22,44 @@ spec:
                 port:
                   number: 3000
 
-    # Chat App Frontend + Portfolio on /portfolio
+    # Chat App Frontend
+    - host: chat.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: chat-frontend-svc
+                port:
+                  number: 3000
+
+    # Chat App Backend API + WebSocket
+    - host: chat-api.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: chat-backend-svc
+                port:
+                  number: 8080
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: portfolio-path-ingress
+  namespace: personal-apps
+  labels:
+    app.kubernetes.io/managed-by: argocd
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  rules:
     - host: chat.local
       http:
         paths:
@@ -43,22 +70,3 @@ spec:
                 name: portfolio-svc
                 port:
                   number: 3000
-          - path: /(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: chat-frontend-svc
-                port:
-                  number: 3000
-
-    # Chat App Backend API + WebSocket (exposed for browser access)
-    - host: chat-api.local
-      http:
-        paths:
-          - path: /(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: chat-backend-svc
-                port:
-                  number: 8080
