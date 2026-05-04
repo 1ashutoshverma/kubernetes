@@ -15,7 +15,7 @@ spec:
   ingressClassName: nginx
   rules:
     # Portfolio Website
-    - host: portfolio.local
+    - host: portfolio.localhost
       http:
         paths:
           - path: /
@@ -27,7 +27,7 @@ spec:
                   number: 3000
 
     # Chat App Frontend
-    - host: chat.local
+    - host: chat.localhost
       http:
         paths:
           - path: /
@@ -39,7 +39,7 @@ spec:
                   number: 3000
 
     # Chat App Backend API + WebSocket
-    - host: chat-api.local
+    - host: chat-api.localhost
       http:
         paths:
           - path: /
@@ -64,7 +64,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: chat.local
+    - host: chat.localhost
       http:
         paths:
           - path: /portfolio(/|$)(.*)
