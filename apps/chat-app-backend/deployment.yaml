@@ -1,6 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  annotations:
+    restartedAt: "2026-05-04T13:15:00Z"
   name: chat-backend
   namespace: personal-apps
   labels:

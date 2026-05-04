@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: portfolio
   namespace: personal-apps
+  annotations:
+    restartedAt: "2026-05-04T13:15:00Z"
   labels:
     app: portfolio
     app.kubernetes.io/name: portfolio
